@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import {
   Search,
   MapPin,
@@ -24,6 +25,7 @@ function Tracking() {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showDetails, setShowDetails] = useState(false);
   const token = localStorage.getItem('token');
 
   useEffect(() => {
@@ -54,6 +56,11 @@ function Tracking() {
   const handleTrack = () => {
     const found = bookings.find(b => b._id === trackingId);
     setSelectedBooking(found || null);
+  };
+
+  const handleViewDetails = (booking) => {
+    setSelectedBooking(booking);
+    setShowDetails(true);
   };
 
   const getStatusColor = (status: string) => {
@@ -126,7 +133,7 @@ function Tracking() {
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
                         <span>Fare</span>
-                        <span>${selectedBooking.fare}</span>
+                        <span>{selectedBooking.fare} pkr</span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span>Distance</span>
@@ -193,7 +200,7 @@ function Tracking() {
                         <Calendar className="h-3 w-3 mr-1" />
                         {new Date(booking.createdAt).toLocaleDateString()}
                       </div>
-                      <Button variant="outline" size="sm" className="mt-2" onClick={() => { setTrackingId(booking._id); handleTrack(); }}>
+                      <Button variant="outline" size="sm" className="mt-2" onClick={() => handleViewDetails(booking)}>
                         View Details
                       </Button>
                     </div>
@@ -202,6 +209,63 @@ function Tracking() {
               </div>
             </CardContent>
           </Card>
+          {/* Booking Details Modal */}
+          <Dialog open={showDetails} onOpenChange={setShowDetails}>
+            <DialogContent>
+              {selectedBooking && (
+                <>
+                  <DialogHeader>
+                    <DialogTitle>Booking Details</DialogTitle>
+                    <DialogDescription>
+                      Complete information for booking <b>#{selectedBooking._id?.slice(-6)}</b>
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4 mt-2">
+                    <div>
+                      <h3 className="font-semibold">Booking Information</h3>
+                      <div className="grid grid-cols-2 gap-4 mt-2 text-sm">
+                        <div>
+                          <p><strong>ID:</strong> {selectedBooking._id}</p>
+                          <p><strong>Status:</strong> {selectedBooking.status}</p>
+                          <p><strong>Transport:</strong> {selectedBooking.modeOfTransport || '-'}</p>
+                          <p><strong>Fare:</strong> ${selectedBooking.fare?.toFixed ? selectedBooking.fare.toFixed(2) : selectedBooking.fare}</p>
+                        </div>
+                        <div>
+                          <p><strong>Distance:</strong> {selectedBooking.distance?.toFixed ? selectedBooking.distance.toFixed(2) : selectedBooking.distance} km</p>
+                          <p><strong>Weight:</strong> {selectedBooking.weight || '-'} kg</p>
+                          <p><strong>Created:</strong> {selectedBooking.createdAt ? new Date(selectedBooking.createdAt).toLocaleString() : '-'}</p>
+                          <p><strong>Scheduled:</strong> {selectedBooking.scheduledDate ? new Date(selectedBooking.scheduledDate).toLocaleString() : 'Not set'}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">Addresses</h3>
+                      <div className="mt-2 text-sm">
+                        <p><strong>Pickup:</strong> {selectedBooking.pickupAddress}</p>
+                        <p><strong>Delivery:</strong> {selectedBooking.deliveryAddress}</p>
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">Customer Information</h3>
+                      <div className="mt-2 text-sm">
+                        <p><strong>Name:</strong> {selectedBooking.customer?.name || '-'}</p>
+                        <p><strong>Email:</strong> {selectedBooking.customer?.email || '-'}</p>
+                      </div>
+                    </div>
+                    {selectedBooking.dispatcher && (
+                      <div>
+                        <h3 className="font-semibold">Dispatcher Information</h3>
+                        <div className="mt-2 text-sm">
+                          <p><strong>Name:</strong> {selectedBooking.dispatcher.name}</p>
+                          <p><strong>Email:</strong> {selectedBooking.dispatcher.email}</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+            </DialogContent>
+          </Dialog>
         </TabsContent>
       </Tabs>
       {error && <div className="text-red-500 text-center">{error}</div>}

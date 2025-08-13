@@ -202,9 +202,10 @@ export const Header = () => {
                 {role === "admin" && (
                   <>
                     <Link to="/dashboard">Dashboard</Link>
-                    <Link to="/admin/bookings">Bookings</Link>
-                    <Link to="/admin/users">Users</Link>
-                    <Link to="/admin/reports">Reports</Link>
+                    <Link to="/dashboard/booking-management">Bookings</Link>
+                    <Link to="/dashboard/user-management">Users</Link>
+                    <Link to="/dashboard/reports">Reports</Link>
+                    <Link to="/dashboard/pricing-rules">Pricing Rules</Link>
                   </>
                 )}
                 {role === "dispatcher" && (

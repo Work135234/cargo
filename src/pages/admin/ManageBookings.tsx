@@ -160,13 +160,20 @@ export default function ManageBookings() {
                         {booking.status}
                       </Badge>
                     </div>
-                    <p className="text-sm text-muted-foreground">{booking.customer}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {typeof booking.customer === 'string' ? booking.customer :
+                        booking.customer && booking.customer.name ? booking.customer.name :
+                          booking.customer && booking.customer.email ? booking.customer.email :
+                            'N/A'}
+                    </p>
                     <p className="text-xs text-muted-foreground">{booking.from} → {booking.to}</p>
                   </div>
                 </div>
 
                 <div className="text-right space-y-2">
-                  <p className="font-medium">${booking.amount.toFixed(2)}</p>
+                  <p className="font-medium">
+                    {typeof booking.amount === 'number' ? `$${booking.amount.toFixed(2)}` : 'N/A'}
+                  </p>
                   <p className="text-sm text-muted-foreground">
                     Driver: {booking.driver}
                   </p>

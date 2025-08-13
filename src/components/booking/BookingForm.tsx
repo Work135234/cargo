@@ -766,14 +766,14 @@ const BookingForm: React.FC = () => {
             </Button>
             {fare !== null && (
               <div className="mt-4 space-y-2">
-                <div className="text-lg font-bold text-green-600">Estimated Fare: ${fare.toFixed(2)}</div>
+                <div className="text-lg font-bold text-green-600">Estimated Fare: {fare.toFixed(2) + ' '}pkr</div>
                 <div className="text-sm text-gray-700 space-y-1">
                   <div className="flex justify-between"><span>Distance:</span> <span>{summary?.distance != null ? `${summary.distance.toFixed(2)} km` : '—'}</span></div>
                   {summary?.breakdown && (
                     <>
-                      <div className="flex justify-between"><span>Base Fare:</span> <span>${summary.breakdown.baseFare.toFixed(2)}</span></div>
-                      <div className="flex justify-between"><span>Distance Cost:</span> <span>${summary.breakdown.distanceCost.toFixed(2)}</span></div>
-                      <div className="flex justify-between"><span>Weight Cost:</span> <span>${summary.breakdown.weightCost.toFixed(2)}</span></div>
+                      <div className="flex justify-between"><span>Base Fare:</span> <span>{summary.breakdown.baseFare.toFixed(2) + ' '}pkr</span></div>
+                      <div className="flex justify-between"><span>Distance Cost:</span> <span>{summary.breakdown.distanceCost.toFixed(2) + ' '}pkr</span></div>
+                      <div className="flex justify-between"><span>Weight Cost:</span> <span>{summary.breakdown.weightCost.toFixed(2) + ' '}pkr</span></div>
                     </>
                   )}
                 </div>
@@ -812,12 +812,12 @@ const BookingForm: React.FC = () => {
             <div className="flex justify-between"><span>Pickup Date:</span><span>{watchAll.pickupDate || '—'}</span></div>
             <div className="flex justify-between"><span>Contact:</span><span>{watchAll.contactName} ({watchAll.contactPhone})</span></div>
             <div className="flex justify-between"><span>Distance:</span><span>{summary?.distance != null ? `${summary.distance.toFixed(2)} km` : 'To be calculated'}</span></div>
-            <div className="flex justify-between font-semibold"><span>Fare:</span><span>${fare?.toFixed(2)}</span></div>
+            <div className="flex justify-between font-semibold"><span>Fare:</span><span>{fare?.toFixed(2) + ' '} pkr</span></div>
             {summary?.breakdown && (
               <div className="border-t pt-2 space-y-1">
-                <div className="flex justify-between"><span>Base Fare</span><span>${summary.breakdown.baseFare.toFixed(2)}</span></div>
-                <div className="flex justify-between"><span>Distance Cost</span><span>${summary.breakdown.distanceCost.toFixed(2)}</span></div>
-                <div className="flex justify-between"><span>Weight Cost</span><span>${summary.breakdown.weightCost.toFixed(2)}</span></div>
+                <div className="flex justify-between"><span>Base Fare</span><span>{summary.breakdown.baseFare.toFixed(2) + ' '}pkr</span></div>
+                <div className="flex justify-between"><span>Distance Cost</span><span>{summary.breakdown.distanceCost.toFixed(2) + ' '}pkr</span></div>
+                <div className="flex justify-between"><span>Weight Cost</span><span>{summary.breakdown.weightCost.toFixed(2) + ' '}pkr</span></div>
               </div>
             )}
           </div>

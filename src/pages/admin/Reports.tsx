@@ -101,7 +101,7 @@ export default function Reports() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${reportData.summary.totalRevenue.toLocaleString()}</div>
+            <div className="text-2xl font-bold">{reportData.summary.totalRevenue.toLocaleString()} pkr</div>
             <p className="text-xs text-muted-foreground">
               <span className="text-success">+8%</span> from last period
             </p>
@@ -114,7 +114,7 @@ export default function Reports() {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${typeof reportData?.summary?.averageOrderValue === 'number' ? reportData.summary.averageOrderValue.toFixed(2) : '0.00'}</div>
+            <div className="text-2xl font-bold">{typeof reportData?.summary?.averageOrderValue === 'number' ? reportData.summary.averageOrderValue.toFixed(2) : '0.00'} pkr</div>
             <p className="text-xs text-muted-foreground">
               <span className="text-success">+3%</span> from last period
             </p>

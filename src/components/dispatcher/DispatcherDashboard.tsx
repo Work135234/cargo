@@ -531,7 +531,7 @@ const DispatcherDashboard: React.FC = () => {
                           <div>
                             <p className="text-gray-600"><strong>Weight:</strong> {booking.weight || 'N/A'} kg</p>
                             <p className="text-gray-600"><strong>Transport:</strong> {booking.modeOfTransport}</p>
-                            <p className="text-gray-600"><strong>Fare:</strong> ${booking.fare?.toFixed(2) || 'N/A'}</p>
+                            <p className="text-gray-600"><strong>Fare:</strong> {booking.fare?.toFixed(2) || 'N/A'} pkr</p>
                           </div>
                         </div>
 
@@ -678,7 +678,6 @@ const DispatcherDashboard: React.FC = () => {
                   <SelectItem value="Scheduled">Scheduled</SelectItem>
                   <SelectItem value="In Transit">In Transit</SelectItem>
                   <SelectItem value="Delivered">Delivered</SelectItem>
-                  <SelectItem value="Cancelled">Cancelled</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -735,7 +734,7 @@ const DispatcherDashboard: React.FC = () => {
                   <p><strong>ID:</strong> {selectedBooking?._id}</p>
                   <p><strong>Status:</strong> {selectedBooking?.status}</p>
                   <p><strong>Transport:</strong> {selectedBooking?.modeOfTransport}</p>
-                  <p><strong>Fare:</strong> ${selectedBooking?.fare?.toFixed(2) || 'N/A'}</p>
+                  <p><strong>Fare:</strong> {selectedBooking?.fare?.toFixed(2) || 'N/A'} pkr</p>
                 </div>
                 <div>
                   <p><strong>Distance:</strong> {selectedBooking?.distance?.toFixed(2) || 'N/A'} km</p>

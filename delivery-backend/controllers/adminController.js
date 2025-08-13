@@ -227,8 +227,9 @@ exports.generateReport = async (req, res) => {
 
     let reportData = {};
 
+
     switch (reportType) {
-      case 'bookings':
+      case 'bookings': {
         const bookings = await Booking.find(query)
           .populate('customer', 'name email')
           .populate('dispatcher', 'name email');
@@ -247,8 +248,8 @@ exports.generateReport = async (req, res) => {
           bookings
         };
         break;
-
-      case 'users':
+      }
+      case 'users': {
         const users = await User.find(query).select('-password');
         const userCounts = users.reduce((acc, user) => {
           acc[user.role] = (acc[user.role] || 0) + 1;
@@ -261,7 +262,52 @@ exports.generateReport = async (req, res) => {
           users
         };
         break;
+      }
+      case 'revenue': {
+        const bookings = await Booking.find(query).populate('customer', 'name email');
+        const totalRevenue = bookings.reduce((sum, booking) => sum + booking.fare, 0);
+        const totalBookings = bookings.length;
+        const averageFare = totalBookings > 0 ? totalRevenue / totalBookings : 0;
 
+        // Monthly breakdown
+        const revenueByMonth = {};
+        bookings.forEach(booking => {
+          const date = new Date(booking.createdAt);
+          const month = date.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+          if (!revenueByMonth[month]) revenueByMonth[month] = 0;
+          revenueByMonth[month] += booking.fare;
+        });
+
+        // Top customers by revenue
+        const customerMap = {};
+        bookings.forEach(booking => {
+          const customerId = booking.customer?._id?.toString() || 'unknown';
+          if (!customerMap[customerId]) {
+            customerMap[customerId] = {
+              _id: customerId,
+              name: booking.customer?.name || 'Unknown',
+              email: booking.customer?.email || '',
+              totalSpent: 0,
+              bookingCount: 0
+            };
+          }
+          customerMap[customerId].totalSpent += booking.fare;
+          customerMap[customerId].bookingCount += 1;
+        });
+        const topCustomers = Object.values(customerMap)
+          .sort((a, b) => b.totalSpent - a.totalSpent)
+          .slice(0, 10);
+
+        reportData = {
+          totalRevenue,
+          totalBookings,
+          averageFare,
+          revenueByMonth,
+          bookings,
+          topCustomers
+        };
+        break;
+      }
       default:
         return res.status(400).json({ success: false, message: 'Invalid report type' });
     }

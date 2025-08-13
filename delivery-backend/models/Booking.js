@@ -22,6 +22,8 @@ const BookingSchema = new mongoose.Schema({
   fare: { type: Number, required: true },
   status: { type: String, enum: ['Pending', 'Scheduled', 'In Transit', 'Delivered'], default: 'Pending' },
   trainSchedule: { type: mongoose.Schema.Types.ObjectId, ref: 'TrainSchedule' },
+  scheduledDate: { type: Date },
+  estimatedDelivery: { type: Date },
   history: [{
     status: String,
     timestamp: { type: Date, default: Date.now }

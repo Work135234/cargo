@@ -448,7 +448,7 @@ const Reports: React.FC = () => {
         csvContent += `"${booking._id}","${booking.customer?.name || 'N/A'}","${booking.customer?.email || 'N/A'}","${booking.pickupAddress}","${booking.deliveryAddress}","${booking.distance}","${booking.weight}","${booking.modeOfTransport}","${booking.fare}","${booking.status}","${new Date(booking.createdAt).toLocaleDateString()}"\n`;
       });
     } else if (filters.reportType === 'revenue') {
-      csvContent = 'Month,Revenue ($),Number of Bookings,Average Fare ($)\n';
+      csvContent = 'Month,Revenue ($),Number of Bookings,Average Fare (pkr)\n';
 
       if (reportData.revenueByMonth) {
         Object.entries(reportData.revenueByMonth).forEach(([month, revenue]) => {
@@ -482,26 +482,26 @@ const Reports: React.FC = () => {
     if (filters.reportType === 'bookings') {
       pdfContent = `BOOKINGS REPORT\nGenerated: ${new Date().toLocaleDateString()}\n\n`;
       pdfContent += `Total Bookings: ${reportData.totalBookings || 0}\n`;
-      pdfContent += `Total Revenue: $${(reportData.totalRevenue || 0).toFixed(2)}\n`;
-      pdfContent += `Average Fare: $${(reportData.averageFare || 0).toFixed(2)}\n\n`;
+      pdfContent += `Total Revenue: ${(reportData.totalRevenue || 0).toFixed(2)} pkr\n`;
+      pdfContent += `Average Fare: ${(reportData.averageFare || 0).toFixed(2)} pkr\n\n`;
 
       pdfContent += 'BOOKING DETAILS:\n';
       reportData.bookings?.forEach((booking: any, index: number) => {
         pdfContent += `${index + 1}. Booking #${booking._id.slice(-6)}\n`;
         pdfContent += `   Customer: ${booking.customer?.name || 'N/A'}\n`;
-        pdfContent += `   Fare: $${booking.fare.toFixed(2)}\n`;
+        pdfContent += `   Fare: ${booking.fare.toFixed(2)} pkr\n`;
         pdfContent += `   Status: ${booking.status}\n`;
         pdfContent += `   Date: ${new Date(booking.createdAt).toLocaleDateString()}\n\n`;
       });
     } else if (filters.reportType === 'revenue') {
       pdfContent = `REVENUE REPORT\nGenerated: ${new Date().toLocaleDateString()}\n\n`;
-      pdfContent += `Total Revenue: $${(reportData.totalRevenue || 0).toFixed(2)}\n`;
+      pdfContent += `Total Revenue: ${(reportData.totalRevenue || 0).toFixed(2)} pkr\n`;
       pdfContent += `Total Bookings: ${reportData.totalBookings || 0}\n\n`;
 
       pdfContent += 'MONTHLY BREAKDOWN:\n';
       if (reportData.revenueByMonth) {
         Object.entries(reportData.revenueByMonth).forEach(([month, revenue]) => {
-          pdfContent += `${month}: $${revenue.toFixed(2)}\n`;
+          pdfContent += `${month}: ${revenue.toFixed(2)} pkr\n`;
         });
       }
     }
@@ -519,7 +519,7 @@ const Reports: React.FC = () => {
 
   const renderBookingsReport = () => (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center">
@@ -538,21 +538,7 @@ const Reports: React.FC = () => {
               <TrendingUp className="h-8 w-8 text-green-600 mr-3" />
               <div>
                 <p className="text-sm text-gray-600">Total Revenue</p>
-                <p className="text-2xl font-bold">${(reportData.totalRevenue || 0).toFixed(2)}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center">
-              <DollarSign className="h-8 w-8 text-purple-600 mr-3" />
-              <div>
-                <p className="text-sm text-gray-600">Average Fare</p>
-                <p className="text-2xl font-bold">
-                  ${(reportData.averageFare || 0).toFixed(2)}
-                </p>
+                <p className="text-2xl font-bold">{(reportData.totalRevenue || 0).toFixed(2)} pkr</p>
               </div>
             </div>
           </CardContent>
@@ -617,7 +603,7 @@ const Reports: React.FC = () => {
               <DollarSign className="h-8 w-8 text-green-600 mr-3" />
               <div>
                 <p className="text-sm text-gray-600">Total Revenue</p>
-                <p className="text-2xl font-bold">${(reportData.totalRevenue || 0).toFixed(2)}</p>
+                <p className="text-2xl font-bold">{(reportData.totalRevenue || 0).toFixed(2)} pkr</p>
               </div>
             </div>
           </CardContent>

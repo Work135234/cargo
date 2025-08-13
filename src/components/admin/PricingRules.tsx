@@ -996,7 +996,7 @@ const PricingRules: React.FC = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="baseFare">Base Fare ($) *</Label>
+                      <Label htmlFor="baseFare">Base Fare (pkr) *</Label>
                       <Input
                         id="baseFare"
                         type="number"
@@ -1010,7 +1010,7 @@ const PricingRules: React.FC = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="perKmRate">Per KM Rate ($) *</Label>
+                      <Label htmlFor="perKmRate">Per KM Rate (pkr) *</Label>
                       <Input
                         id="perKmRate"
                         type="number"
@@ -1024,7 +1024,7 @@ const PricingRules: React.FC = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="perKgRate">Per KG Rate ($) *</Label>
+                      <Label htmlFor="perKgRate">Per KG Rate (pkr) *</Label>
                       <Input
                         id="perKgRate"
                         type="number"
@@ -1091,9 +1091,9 @@ const PricingRules: React.FC = () => {
                           </span>
                         </div>
                         <div className="text-sm text-gray-600 space-y-1">
-                          <p><strong>Base Fare:</strong> ${rule.baseFare.toFixed(2)}</p>
-                          <p><strong>Per KM Rate:</strong> ${rule.perKmRate.toFixed(2)}</p>
-                          <p><strong>Per KG Rate:</strong> ${rule.perKgRate.toFixed(2)}</p>
+                          <p><strong>Base Fare:</strong> {rule.baseFare.toFixed(2)} pkr</p>
+                          <p><strong>Per KM Rate:</strong> {rule.perKmRate.toFixed(2)} pkr</p>
+                          <p><strong>Per KG Rate:</strong> {rule.perKgRate.toFixed(2)} pkr</p>
                         </div>
                       </div>
                       <div className="flex gap-2">

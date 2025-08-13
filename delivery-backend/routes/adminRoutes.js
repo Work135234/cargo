@@ -9,11 +9,7 @@ const Booking = require('../models/Booking');
 const TrainSchedule = require('../models/TrainSchedule');
 
 // Admin schedule booking
-router.post('/schedule-booking', async (req, res, next) => {
-    // Only allow admins
-    if (!req.user || req.user.role !== 'Admin') {
-        return res.status(403).json({ success: false, message: 'Access denied' });
-    }
+router.post('/schedule-booking', auth, role('Admin'), (req, res, next) => {
     return require('../controllers/bookingController').adminScheduleBooking(req, res, next);
 });
 
