@@ -18,7 +18,7 @@ interface LoginFormProps {
 }
 
 const roles = [
-  { label: 'Customer', value: 'Customer', icon: <User className="mr-2 h-4 w-4" /> },
+  { label: 'Booking Manager', value: 'Customer', icon: <User className="mr-2 h-4 w-4" /> },
   { label: 'Admin', value: 'Admin', icon: <Shield className="mr-2 h-4 w-4" /> },
   { label: 'Dispatcher', value: 'Dispatcher', icon: <Truck className="mr-2 h-4 w-4" /> },
 ];

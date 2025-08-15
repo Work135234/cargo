@@ -126,7 +126,9 @@ exports.notifyBookingCreated = async (booking) => {
   try {
     // Notify admin about new booking
     const adminUsers = await User.find({ role: 'Admin' });
+    const dispatcherUsers = await User.find({ role: 'Dispatcher' });
     console.log('Admins found for notification:', adminUsers.map(a => ({ id: a._id, email: a.email })));
+    console.log('Dispatchers found for notification:', dispatcherUsers.map(d => ({ id: d._id, email: d.email })));
 
     const bookingIdStr = booking._id.toString();
     for (const admin of adminUsers) {
@@ -139,6 +141,19 @@ exports.notifyBookingCreated = async (booking) => {
         'high'
       );
       console.log('Admin notification created:', notif);
+    }
+
+    // Notify all dispatchers about new booking
+    for (const dispatcher of dispatcherUsers) {
+      const notif = await this.createNotification(
+        dispatcher._id,
+        'New Booking Available',
+        `A new booking is available. Booking ID: ${bookingIdStr.slice(-6)}. Pickup: ${booking.pickupAddress}`,
+        'booking_created',
+        booking._id,
+        'high'
+      );
+      console.log('Dispatcher notification created:', notif);
     }
 
     // Notify customer about booking confirmation
@@ -159,7 +174,7 @@ exports.notifyBookingCreated = async (booking) => {
 // Create notification for dispatcher assignment
 exports.notifyDispatcherAssigned = async (booking, dispatcher) => {
   try {
-    // Notify dispatcher about new assignment
+    // Notify dispatcher about new assignment ONLY
     const bookingIdStr = booking._id.toString();
     const dispatcherNotif = await this.createNotification(
       dispatcher._id,
@@ -170,56 +185,11 @@ exports.notifyDispatcherAssigned = async (booking, dispatcher) => {
       'high'
     );
     console.log('Dispatcher notification created:', dispatcherNotif);
-
-    // Notify customer about dispatcher assignment
-    const customerNotif = await this.createNotification(
-      booking.customer,
-      'Dispatcher Assigned',
-      `A dispatcher has been assigned to your delivery. Booking ID: ${bookingIdStr.slice(-6)}`,
-      'dispatcher_assigned',
-      booking._id,
-      'medium'
-    );
-    console.log('Customer notification for dispatcher assignment created:', customerNotif);
+    // No notification to customer
   } catch (err) {
     console.error('Notify dispatcher assigned error:', err);
   }
 };
-
-// Create notification for status update
-exports.notifyStatusUpdate = async (booking, oldStatus, newStatus) => {
-  try {
-    // Notify customer about status change
-    const bookingIdStr = booking._id.toString();
-    await this.createNotification(
-      booking.customer,
-      'Delivery Status Updated',
-      `Your delivery status has been updated from ${oldStatus} to ${newStatus}. Booking ID: ${bookingIdStr.slice(-6)}`,
-      'status_updated',
-      booking._id,
-      'medium'
-    );
-
-    // If status is "Delivered", notify admin
-    if (newStatus === 'Delivered') {
-      const adminUsers = await User.find({ role: 'Admin' });
-
-      for (const admin of adminUsers) {
-        await this.createNotification(
-          admin._id,
-          'Delivery Completed',
-          `Delivery completed for booking ${bookingIdStr.slice(-6)}`,
-          'delivery_completed',
-          booking._id,
-          'medium'
-        );
-      }
-    }
-  } catch (err) {
-    console.error('Notify status update error:', err);
-  }
-};
-
 // Delete a notification
 exports.deleteNotification = async (req, res) => {
   try {

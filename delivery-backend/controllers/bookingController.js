@@ -471,7 +471,9 @@ const createBooking = async (req, res) => {
       productType: req.body.productType,
       dimensions: req.body.dimensions,
       pickupDate: req.body.pickupDate,
-      specialInstructions: req.body.specialInstructions
+      specialInstructions: req.body.specialInstructions,
+      scheduledDate: req.body.scheduledDate ? new Date(req.body.scheduledDate) : undefined,
+      estimatedDelivery: req.body.estimatedDelivery ? new Date(req.body.estimatedDelivery) : undefined
     });
 
     await booking.save();

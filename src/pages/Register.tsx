@@ -11,7 +11,7 @@ const Register = () => {
   const location = useLocation();
 
   // Get role from location state or query param
-  let defaultRole = 'Customer';
+  let defaultRole = 'Booking Manager';
   if (location.state && location.state.role) {
     defaultRole = location.state.role;
   } else if (location.search) {

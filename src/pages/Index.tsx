@@ -104,7 +104,7 @@ const Index = () => {
                 <div className="mx-auto bg-primary/10 p-4 rounded-full w-fit">
                   <Users className="h-8 w-8 text-primary" />
                 </div>
-                <CardTitle className="text-2xl">Customer Portal</CardTitle>
+                <CardTitle className="text-2xl">Booking Manager Portal</CardTitle>
                 <CardDescription>For businesses and individuals</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -127,7 +127,7 @@ const Index = () => {
                   </li>
                 </ul>
                 <Button className="w-full" asChild>
-                  <Link to="/register">Sign Up as Customer</Link>
+                  <Link to="/register">Sign Up as Booking Manager</Link>
                 </Button>
               </CardContent>
             </Card>
@@ -241,7 +241,7 @@ const Index = () => {
             <div>
               <h3 className="font-semibold mb-4">Platform</h3>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link to="/register" className="hover:text-primary">Customer Portal</Link></li>
+                <li><Link to="/register" className="hover:text-primary">Booking Manager Portal</Link></li>
                 <li><Link to="/login" className="hover:text-primary">Admin Panel</Link></li>
                 <li><Link to="/login" className="hover:text-primary">Dispatcher Access</Link></li>
               </ul>

@@ -185,7 +185,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess, onSwitch
                 <SelectValue placeholder="Select your role" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Customer">Customer</SelectItem>
+                <SelectItem value="Customer">Booking Manager</SelectItem>
                 <SelectItem value="Dispatcher">Dispatcher</SelectItem>
                 {!adminExists && <SelectItem value="Admin">Admin</SelectItem>}
               </SelectContent>

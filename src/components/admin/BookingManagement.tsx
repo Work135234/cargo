@@ -58,7 +58,6 @@ const BookingManagement: React.FC = () => {
   const [success, setSuccess] = useState('');
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [showAssignModal, setShowAssignModal] = useState(false);
-  const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [selectedDispatcher, setSelectedDispatcher] = useState('');
   const [assigning, setAssigning] = useState(false);
   const [scheduling, setScheduling] = useState(false);
@@ -233,7 +232,7 @@ const BookingManagement: React.FC = () => {
       const result = await response.json();
 
       if (result.success) {
-        setShowScheduleModal(false);
+        // setShowScheduleModal(false); (removed, schedule modal no longer exists)
         setSelectedBooking(null); // Prevent details modal from opening after scheduling
         setScheduleData({ scheduledDate: '', estimatedDelivery: '' });
         setSuccess('Booking scheduled successfully!');
@@ -453,31 +452,8 @@ const BookingManagement: React.FC = () => {
                           <Eye className="h-4 w-4" />
                         </Button>
 
-                        {!booking.dispatcher && booking.status === 'Pending' && (
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => {
-                              setSelectedBooking(booking);
-                              setShowAssignModal(true);
-                            }}
-                          >
-                            <Truck className="h-4 w-4" />
-                          </Button>
-                        )}
 
-                        {booking.status === 'Pending' && (
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => {
-                              setSelectedBooking(booking);
-                              setShowScheduleModal(true);
-                            }}
-                          >
-                            <Clock className="h-4 w-4" />
-                          </Button>
-                        )}
+
 
                         {booking.status !== 'Delivered' && booking.status !== 'Cancelled' && (
                           <Select onValueChange={(value) => handleUpdateStatus(booking._id, value)}>
@@ -534,7 +510,7 @@ const BookingManagement: React.FC = () => {
       </Card>
 
       {/* Booking Details Modal */}
-      {selectedBooking && !showAssignModal && !showScheduleModal && (
+      {selectedBooking && !showAssignModal && (
         <Dialog open={!!selectedBooking} onOpenChange={() => setSelectedBooking(null)}>
           <DialogContent className="sm:max-w-2xl">
             <DialogHeader>
@@ -602,100 +578,8 @@ const BookingManagement: React.FC = () => {
         </Dialog>
       )}
 
-      {/* Schedule Booking Modal */}
-      {selectedBooking && showScheduleModal && (
-        <Dialog open={showScheduleModal} onOpenChange={setShowScheduleModal}>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>Schedule Booking</DialogTitle>
-              <DialogDescription>
-                Set the start and end date for booking #{selectedBooking._id.slice(-6)}
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Start Date</label>
-                <Input
-                  type="date"
-                  value={scheduleData.scheduledDate}
-                  onChange={e => setScheduleData(sd => ({ ...sd, scheduledDate: e.target.value }))}
-                  disabled={scheduling}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">End Date</label>
-                <Input
-                  type="date"
-                  value={scheduleData.estimatedDelivery}
-                  onChange={e => setScheduleData(sd => ({ ...sd, estimatedDelivery: e.target.value }))}
-                  disabled={scheduling}
-                />
-              </div>
-              <div className="flex gap-2 mt-2">
-                <Button onClick={handleScheduleBooking} disabled={scheduling || !scheduleData.scheduledDate || !scheduleData.estimatedDelivery}>
-                  {scheduling ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                  Schedule
-                </Button>
-                <Button variant="outline" onClick={() => setShowScheduleModal(false)} disabled={scheduling}>
-                  Cancel
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
 
-      {/* Assign Dispatcher Modal */}
-      <Dialog open={showAssignModal} onOpenChange={setShowAssignModal}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Assign Dispatcher</DialogTitle>
-            <DialogDescription>
-              Assign a dispatcher to booking #{selectedBooking?._id.slice(-6)}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm font-medium">Select Dispatcher</label>
-              <Select value={selectedDispatcher} onValueChange={setSelectedDispatcher}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Choose a dispatcher" />
-                </SelectTrigger>
-                <SelectContent>
-                  {dispatchers.map((dispatcher) => (
-                    <SelectItem key={dispatcher._id} value={dispatcher._id}>
-                      {dispatcher.name} ({dispatcher.email})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex gap-2">
-              <Button
-                onClick={handleAssignDispatcher}
-                disabled={!selectedDispatcher || assigning}
-                className="flex-1"
-              >
-                {assigning ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Assigning...
-                  </>
-                ) : (
-                  'Assign Dispatcher'
-                )}
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => setShowAssignModal(false)}
-                disabled={assigning}
-              >
-                Cancel
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+
 
 
     </div>

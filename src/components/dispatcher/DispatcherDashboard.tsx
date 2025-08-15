@@ -678,6 +678,7 @@ const DispatcherDashboard: React.FC = () => {
                   <SelectItem value="Scheduled">Scheduled</SelectItem>
                   <SelectItem value="In Transit">In Transit</SelectItem>
                   <SelectItem value="Delivered">Delivered</SelectItem>
+                  <SelectItem value="Cancelled">Cancelled</SelectItem>
                 </SelectContent>
               </Select>
             </div>

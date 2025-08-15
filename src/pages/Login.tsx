@@ -99,16 +99,16 @@ export default function Login() {
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="customer" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="customer" className="text-xs">
+              <TabsList className="grid w-[540px] grid-cols-3 mx-auto">
+                <TabsTrigger value="customer" className="text-xs whitespace-nowrap px-6 py-2">
                   <Users className="h-4 w-4 mr-1" />
-                  Customer
+                  Booking Manager
                 </TabsTrigger>
-                <TabsTrigger value="admin" className="text-xs">
+                <TabsTrigger value="admin" className="text-xs whitespace-nowrap px-6 py-2">
                   <Shield className="h-4 w-4 mr-1" />
                   Admin
                 </TabsTrigger>
-                <TabsTrigger value="dispatcher" className="text-xs">
+                <TabsTrigger value="dispatcher" className="text-xs whitespace-nowrap px-6 py-2">
                   <Truck className="h-4 w-4 mr-1" />
                   Dispatcher
                 </TabsTrigger>

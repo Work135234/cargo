@@ -22,8 +22,8 @@ router.get('/recent', bookingController.getRecentBookings);
 // Calculate fare
 router.post('/calculate-fare', bookingController.calculateFare);
 
-// Assign dispatcher (Admin only)
-router.post('/assign-dispatcher', role('Admin'), bookingController.assignDispatcher);
+// Assign dispatcher (Customer or Admin)
+router.post('/assign-dispatcher', bookingController.assignDispatcher);
 
 // Update booking status (Admin and Dispatcher)
 router.post('/update-status', role(['Admin', 'Dispatcher']), bookingController.updateStatus);

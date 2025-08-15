@@ -367,6 +367,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { useDispatchers } from '../../hooks/use-dispatchers';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNotifications } from '../../contexts/NotificationContext';
 
@@ -381,6 +382,9 @@ interface BookingFormData {
   specialInstructions?: string;
   contactName: string;
   contactPhone: string;
+  dispatcherId?: string;
+  scheduledDate: string;
+  estimatedDelivery: string;
 }
 
 const productTypes = [
@@ -392,14 +396,17 @@ const productTypes = [
 ];
 
 const BookingForm: React.FC = () => {
+  // Context hooks must be called first
+  const { token } = useAuth();
+  const { showToast } = useNotifications();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [fare, setFare] = useState<number | null>(null);
   const [summary, setSummary] = useState<any>({});
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const { token } = useAuth();
-  const { showToast } = useNotifications();
+  const [selectedDispatcher, setSelectedDispatcher] = useState<string | undefined>(undefined);
+  const { dispatchers, loading: dispatchersLoading, error: dispatchersError } = useDispatchers(token);
 
   const {
     register,
@@ -472,8 +479,11 @@ const BookingForm: React.FC = () => {
 
       const payload = {
         ...data,
+        dispatcherId: selectedDispatcher,
         fare: ensuredFare,
         distance: ensuredDistance,
+        scheduledDate: data.scheduledDate,
+        estimatedDelivery: data.estimatedDelivery,
       };
 
       const response = await fetch('http://localhost:5000/api/bookings', {
@@ -579,12 +589,12 @@ const BookingForm: React.FC = () => {
   };
 
   return (
-    <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div className="w-full flex flex-col items-center justify-center gap-8 py-8">
       {/* Main Form */}
       <div className="lg:col-span-2 space-y-8">
         {/* Pickup & Destination */}
-        <Card className="bg-white text-gray-900 border border-gray-200 shadow-lg">
-          <CardHeader>
+        <Card className="bg-white text-gray-900 border border-gray-200 shadow-lg mx-auto max-w-2xl w-full">
+          <CardHeader className="flex flex-col items-center justify-center">
             <CardTitle className="flex items-center text-2xl font-bold text-gray-900">
               <MapPin className="mr-2 h-6 w-6" /> Pickup & Destination
             </CardTitle>
@@ -617,7 +627,7 @@ const BookingForm: React.FC = () => {
         </Card>
         {/* Shipment Details */}
         <Card className="bg-white text-gray-900 border border-gray-200 shadow-lg">
-          <CardHeader>
+          <CardHeader className="flex flex-col items-center justify-center">
             <CardTitle className="flex items-center text-2xl font-bold text-gray-900">
               <Boxes className="mr-2 h-6 w-6" /> Shipment Details
             </CardTitle>
@@ -673,15 +683,7 @@ const BookingForm: React.FC = () => {
                   className="border-gray-300 bg-white text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
-              <div>
-                <Label htmlFor="pickupDate" className="text-gray-700">Preferred Pickup Date</Label>
-                <Input
-                  id="pickupDate"
-                  type="date"
-                  {...register('pickupDate')}
-                  className="border-gray-300 bg-white text-gray-900 focus:border-blue-500 focus:ring-blue-500"
-                />
-              </div>
+              {/* Preferred Pickup Date removed as per request */}
               <div className="md:col-span-2">
                 <Label htmlFor="specialInstructions" className="text-gray-700">Special Instructions (Optional)</Label>
                 <textarea
@@ -697,7 +699,7 @@ const BookingForm: React.FC = () => {
         </Card>
         {/* Contact Information */}
         <Card className="bg-white text-gray-900 border border-gray-200 shadow-lg">
-          <CardHeader>
+          <CardHeader className="flex flex-col items-center justify-center">
             <CardTitle className="flex items-center text-2xl font-bold text-gray-900">
               <User className="mr-2 h-6 w-6" /> Contact Information
             </CardTitle>
@@ -728,6 +730,123 @@ const BookingForm: React.FC = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Assign Dispatcher Section */}
+        <Card className="bg-white text-gray-900 border border-gray-200 shadow-lg">
+          <CardHeader className="flex flex-col items-center justify-center">
+            <CardTitle className="flex items-center text-2xl font-bold text-gray-900">
+              <User className="mr-2 h-6 w-6" /> Assign Dispatcher
+            </CardTitle>
+            <CardDescription className="text-gray-600">Select a dispatcher for your booking</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="w-full">
+              <Label htmlFor="dispatcher" className="text-gray-700">Dispatcher</Label>
+              <Select
+                value={selectedDispatcher}
+                onValueChange={(value) => {
+                  setSelectedDispatcher(value);
+                  setValue('dispatcherId', value);
+                }}
+                disabled={dispatchersLoading}
+              >
+                <SelectTrigger className="border-gray-300 bg-white text-gray-900 focus:border-blue-500 focus:ring-blue-500">
+                  <SelectValue placeholder={dispatchersLoading ? 'Loading...' : 'Select dispatcher'} />
+                </SelectTrigger>
+                <SelectContent>
+                  {dispatchers.map((d) => (
+                    <SelectItem key={d._id} value={d._id}>{d.name} ({d.email})</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {dispatchersError && <p className="text-sm text-red-600 mt-2">{dispatchersError}</p>}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Sidebar: Fare Calculator & Summary */}
+        <div className="space-y-8">
+          <Card className="bg-white text-gray-900 border border-gray-200 shadow-lg mx-auto max-w-2xl w-full">
+            <CardHeader className="flex flex-col items-center justify-center">
+              <CardTitle className="flex items-center text-xl font-bold text-gray-900">
+                <Calculator className="mr-2 h-5 w-5" /> Fare Calculator
+              </CardTitle>
+              <CardDescription className="text-gray-600">Get instant pricing estimates</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold" onClick={handleCalculateFare}>
+                Calculate Fare
+              </Button>
+              {fare !== null && (
+                <div className="mt-4 space-y-2">
+                  <div className="text-lg font-bold text-green-600">Estimated Fare: {fare.toFixed(2) + ' '}pkr</div>
+                  <div className="text-sm text-gray-700 space-y-1">
+                    <div className="flex justify-between"><span>Distance:</span> <span>{summary?.distance != null ? `${summary.distance.toFixed(2)} km` : '—'}</span></div>
+                    {summary?.breakdown && (
+                      <>
+                        <div className="flex justify-between"><span>Base Fare:</span> <span>{summary.breakdown.baseFare.toFixed(2) + ' '}pkr</span></div>
+                        <div className="flex justify-between"><span>Distance Cost:</span> <span>{summary.breakdown.distanceCost.toFixed(2) + ' '}pkr</span></div>
+                        <div className="flex justify-between"><span>Weight Cost:</span> <span>{summary.breakdown.weightCost.toFixed(2) + ' '}pkr</span></div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Schedule Booking Section */}
+          <Card className="bg-white text-gray-900 border border-gray-200 shadow-lg mx-auto max-w-2xl w-full">
+            <CardHeader className="flex flex-col items-center justify-center">
+              <CardTitle className="flex items-center text-xl font-bold text-gray-900">
+                <Calendar className="mr-2 h-5 w-5" /> Schedule Booking
+              </CardTitle>
+              <CardDescription className="text-gray-600">Set the start and end date for your booking</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="scheduledDate" className="text-gray-700">Start Date</Label>
+                  <Input
+                    id="scheduledDate"
+                    type="date"
+                    {...register('scheduledDate', { required: 'Start date is required' })}
+                    className="border-gray-300 bg-white text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+                  />
+                  {errors.scheduledDate && <p className="text-sm text-red-600">{errors.scheduledDate.message}</p>}
+                </div>
+                <div>
+                  <Label htmlFor="estimatedDelivery" className="text-gray-700">End Date</Label>
+                  <Input
+                    id="estimatedDelivery"
+                    type="date"
+                    {...register('estimatedDelivery', { required: 'End date is required' })}
+                    className="border-gray-300 bg-white text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+                  />
+                  {errors.estimatedDelivery && <p className="text-sm text-red-600">{errors.estimatedDelivery.message}</p>}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white text-gray-900 border border-gray-200 shadow-lg">
+            <CardHeader className="flex flex-col items-center justify-center">
+              <CardTitle className="flex items-center text-xl font-bold text-gray-900">Booking Summary</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2 text-sm text-gray-700">
+                <div className="flex justify-between"><span>Transport:</span> <span>{watchAll.modeOfTransport || 'Not Selected'}</span></div>
+                <div className="flex justify-between"><span>Product:</span> <span>{watchAll.productType || 'Not selected'}</span></div>
+                <div className="flex justify-between"><span>Weight:</span> <span>{watchAll.weight ? `${watchAll.weight} kg` : 'Not specified'}</span></div>
+                <div className="flex justify-between"><span>Distance:</span> <span>{summary.distance ? `${summary.distance.toFixed(2)} km` : 'Calculate fare to see'}</span></div>
+                <div className="flex justify-between"><span>Pickup Date:</span> <span>{watchAll.pickupDate || 'Not selected'}</span></div>
+                <div className="flex justify-between"><span>Start Date:</span> <span>{watchAll.scheduledDate || 'Not selected'}</span></div>
+                <div className="flex justify-between"><span>End Date:</span> <span>{watchAll.estimatedDelivery || 'Not selected'}</span></div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Submit Button */}
         <Button type="button" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold text-lg py-3 mt-4" disabled={isLoading} onClick={handleOpenConfirm}>
           {isLoading ? (
@@ -751,55 +870,10 @@ const BookingForm: React.FC = () => {
           </Alert>
         )}
       </div>
-      {/* Sidebar: Fare Calculator & Summary */}
-      <div className="space-y-8">
-        <Card className="bg-white text-gray-900 border border-gray-200 shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center text-xl font-bold text-gray-900">
-              <Calculator className="mr-2 h-5 w-5" /> Fare Calculator
-            </CardTitle>
-            <CardDescription className="text-gray-600">Get instant pricing estimates</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold" onClick={handleCalculateFare}>
-              Calculate Fare
-            </Button>
-            {fare !== null && (
-              <div className="mt-4 space-y-2">
-                <div className="text-lg font-bold text-green-600">Estimated Fare: {fare.toFixed(2) + ' '}pkr</div>
-                <div className="text-sm text-gray-700 space-y-1">
-                  <div className="flex justify-between"><span>Distance:</span> <span>{summary?.distance != null ? `${summary.distance.toFixed(2)} km` : '—'}</span></div>
-                  {summary?.breakdown && (
-                    <>
-                      <div className="flex justify-between"><span>Base Fare:</span> <span>{summary.breakdown.baseFare.toFixed(2) + ' '}pkr</span></div>
-                      <div className="flex justify-between"><span>Distance Cost:</span> <span>{summary.breakdown.distanceCost.toFixed(2) + ' '}pkr</span></div>
-                      <div className="flex justify-between"><span>Weight Cost:</span> <span>{summary.breakdown.weightCost.toFixed(2) + ' '}pkr</span></div>
-                    </>
-                  )}
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-        <Card className="bg-white text-gray-900 border border-gray-200 shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center text-xl font-bold text-gray-900">Booking Summary</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2 text-sm text-gray-700">
-              <div className="flex justify-between"><span>Transport:</span> <span>{watchAll.modeOfTransport || 'Not Selected'}</span></div>
-              <div className="flex justify-between"><span>Product:</span> <span>{watchAll.productType || 'Not selected'}</span></div>
-              <div className="flex justify-between"><span>Weight:</span> <span>{watchAll.weight ? `${watchAll.weight} kg` : 'Not specified'}</span></div>
-              <div className="flex justify-between"><span>Distance:</span> <span>{summary.distance ? `${summary.distance.toFixed(2)} km` : 'Calculate fare to see'}</span></div>
-              <div className="flex justify-between"><span>Pickup Date:</span> <span>{watchAll.pickupDate || 'Not selected'}</span></div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
 
       {/* Confirmation Modal */}
       <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
-        <DialogContent>
+        <DialogContent className="flex flex-col items-center justify-center">
           <DialogHeader>
             <DialogTitle>Confirm Your Booking</DialogTitle>
           </DialogHeader>
