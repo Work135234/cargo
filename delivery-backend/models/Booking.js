@@ -19,6 +19,7 @@ const BookingSchema = new mongoose.Schema({
   specialInstructions: { type: String },
   contactName: { type: String, required: true },
   contactPhone: { type: String, required: true },
+  contactEmail: { type: String, required: true },
   fare: { type: Number, required: true },
   status: { type: String, enum: ['Pending', 'Scheduled', 'In Transit', 'Delivered'], default: 'Pending' },
   trainSchedule: { type: mongoose.Schema.Types.ObjectId, ref: 'TrainSchedule' },

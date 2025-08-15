@@ -17,6 +17,9 @@ interface Booking {
   modeOfTransport: string;
   fare: number;
   status: string;
+  contactName: string;
+  contactPhone: string;
+  contactEmail: string;
   dispatcher?: {
     _id: string;
     name: string;
@@ -354,11 +357,21 @@ const CustomerDashboard: React.FC = () => {
                     </div>
                   </div>
 
+
                   <div>
                     <h3 className="font-semibold">Addresses</h3>
                     <div className="mt-2 text-sm">
                       <p><strong>Pickup:</strong> {selectedBooking.pickupAddress}</p>
                       <p><strong>Delivery:</strong> {selectedBooking.deliveryAddress}</p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="font-semibold">Contact Information</h3>
+                    <div className="mt-2 text-sm">
+                      <p><strong>Name:</strong> {selectedBooking.contactName}</p>
+                      <p><strong>Phone:</strong> {selectedBooking.contactPhone}</p>
+                      <p><strong>Email:</strong> {selectedBooking.contactEmail}</p>
                     </div>
                   </div>
 

@@ -468,6 +468,7 @@ const createBooking = async (req, res) => {
       status: 'Pending',
       contactName: req.body.contactName,
       contactPhone: req.body.contactPhone,
+      contactEmail: req.body.contactEmail,
       productType: req.body.productType,
       dimensions: req.body.dimensions,
       pickupDate: req.body.pickupDate,
@@ -483,6 +484,20 @@ const createBooking = async (req, res) => {
 
     // Send notifications
     await notificationController.notifyBookingCreated(booking);
+
+    // Send booking details email to contact
+    try {
+      const sendEmail = require('../utils/sendEmail.sendgrid');
+      const buildBookingEmailHtml = require('../utils/buildBookingEmailHtml');
+      await sendEmail({
+        to: booking.contactEmail,
+        subject: 'Your Booking Confirmation',
+        html: buildBookingEmailHtml(booking),
+        text: 'Thank you for your booking. Please see the attached details.'
+      });
+    } catch (emailErr) {
+      console.error('Failed to send booking email:', emailErr);
+    }
 
     res.status(201).json({
       success: true,

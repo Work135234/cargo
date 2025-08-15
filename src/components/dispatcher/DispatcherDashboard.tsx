@@ -298,6 +298,9 @@ interface Booking {
   modeOfTransport: string;
   fare: number;
   status: string;
+  contactName: string;
+  contactPhone: string;
+  contactEmail: string;
   customer: {
     _id: string;
     name: string;
@@ -754,11 +757,13 @@ const DispatcherDashboard: React.FC = () => {
               </div>
             </div>
 
+
             <div>
-              <h3 className="font-semibold">Customer Information</h3>
+              <h3 className="font-semibold">Contact Information</h3>
               <div className="mt-2 text-sm">
-                <p><strong>Name:</strong> {selectedBooking?.customer?.name || 'Unknown'}</p>
-                <p><strong>Email:</strong> {selectedBooking?.customer?.email || 'N/A'}</p>
+                <p><strong>Name:</strong> {selectedBooking?.contactName}</p>
+                <p><strong>Phone:</strong> {selectedBooking?.contactPhone}</p>
+                <p><strong>Email:</strong> {selectedBooking?.contactEmail}</p>
               </div>
             </div>
 

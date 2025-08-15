@@ -382,6 +382,7 @@ interface BookingFormData {
   specialInstructions?: string;
   contactName: string;
   contactPhone: string;
+  contactEmail: string;
   dispatcherId?: string;
   scheduledDate: string;
   estimatedDelivery: string;
@@ -726,6 +727,23 @@ const BookingForm: React.FC = () => {
                   className={`${errors.contactPhone ? 'border-red-500' : 'border-gray-300'} bg-white text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-blue-500`}
                 />
                 {errors.contactPhone && <p className="text-sm text-red-600">{errors.contactPhone.message}</p>}
+              </div>
+              <div>
+                <Label htmlFor="contactEmail" className="text-gray-700">Contact Email</Label>
+                <Input
+                  id="contactEmail"
+                  type="email"
+                  placeholder="Email address"
+                  {...register('contactEmail', {
+                    required: 'Contact email is required',
+                    pattern: {
+                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                      message: 'Invalid email address',
+                    },
+                  })}
+                  className={`${errors.contactEmail ? 'border-red-500' : 'border-gray-300'} bg-white text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-blue-500`}
+                />
+                {errors.contactEmail && <p className="text-sm text-red-600">{errors.contactEmail.message}</p>}
               </div>
             </div>
           </CardContent>
