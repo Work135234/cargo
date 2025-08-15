@@ -23,5 +23,9 @@ dist-ssr
 *.sln
 *.sw?
 
+# Environment files
+.env
+delivery-backend/.env
+
 # Firebase service account (credentials)
 delivery-backend/config/firebase-service-account.json
