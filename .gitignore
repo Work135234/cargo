@@ -29,3 +29,4 @@ delivery-backend/.env
 
 # Firebase service account (credentials)
 delivery-backend/config/firebase-service-account.json
+.env
