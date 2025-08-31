@@ -121,8 +121,14 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen flex items-center justify-center bg-mesh-gradient">
+        <div className="text-center space-y-4 animate-fade-in-up">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary/20 border-t-primary mx-auto"></div>
+          <div className="space-y-2">
+            <h3 className="text-lg font-semibold text-foreground">Authenticating...</h3>
+            <p className="text-muted-foreground">Please wait while we verify your credentials</p>
+          </div>
+        </div>
       </div>
     );
   }
@@ -135,8 +141,19 @@ const AppContent: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen flex items-center justify-center bg-mesh-gradient">
+        <div className="text-center space-y-6 animate-fade-in-up">
+          <div className="animate-spin rounded-full h-20 w-20 border-4 border-primary/20 border-t-primary mx-auto"></div>
+          <div className="space-y-2">
+            <h2 className="text-2xl font-bold text-foreground">Loading CargoStream</h2>
+            <p className="text-muted-foreground">Preparing your logistics platform...</p>
+          </div>
+          <div className="flex justify-center space-x-1">
+            <div className="h-1 w-8 bg-primary/30 rounded-full">
+              <div className="h-1 bg-primary rounded-full animate-loading"></div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
