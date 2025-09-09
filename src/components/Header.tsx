@@ -150,7 +150,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Truck, User, LogOut } from "lucide-react";
 import NotificationBell from "./NotificationBell";
-import { useAuth } from "@/contexts/AuthContext";  // <-- real context
+import { useAuth } from "@/contexts/AuthContext";
 
 export const Header = () => {
   const location = useLocation();
@@ -161,7 +161,7 @@ export const Header = () => {
   const role = typeof user?.role === 'string' ? user.role.toLowerCase() : undefined;
 
   const handleLogout = () => {
-    logout();        // clears token + context
+    logout(); // clears token + context
     navigate("/login");
   };
 
