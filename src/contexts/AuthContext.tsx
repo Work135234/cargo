@@ -36,7 +36,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     if (storedToken && storedUser) {
       try {
-        let userData = JSON.parse(storedUser);
+        const userData = JSON.parse(storedUser);
         // If userData has id but not _id, fix it
         if (userData.id && !userData._id) {
           userData._id = userData.id;
@@ -54,9 +54,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const login = async (newToken: string, userData: any) => {
+  const login = async (newToken: string, userData: Record<string, any>) => {
     // Always use _id for user
-    let userObj = { ...userData };
+    const userObj = { ...userData };
     if (userObj.id && !userObj._id) {
       userObj._id = userObj.id;
       delete userObj.id;
